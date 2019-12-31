@@ -5,6 +5,7 @@ import {NativeModules, requireNativeComponent, View, findNodeHandle} from 'react
 const WpcButtonManager = NativeModules.Printer;
 const CAMERA_REF = 'wpcBtn';
 
+
 type DetectOption = {
     fname?: string
 };
@@ -41,7 +42,7 @@ function convertNativeProps(props) {
 }
 
 export default class WpcButtonClass extends Component {
-
+    
     static constants = {
         Aspect: WpcButtonManager.Aspect,
         CaptureQuality: WpcButtonManager.CaptureQuality,
@@ -81,6 +82,7 @@ export default class WpcButtonClass extends Component {
             PropTypes.string,
             PropTypes.number
         ]),
+        
         touchToFocus: PropTypes.bool,
         onTrained: PropTypes.func,
         onRecognized: PropTypes.func,
@@ -106,16 +108,22 @@ export default class WpcButtonClass extends Component {
     _cameraHandle: ?number;
 
     _setReference = (ref: ?Object) => {
+        console.log("_setReference");
+        // console.log(ref);
+        
         if (ref) {
+            console.log(" NICE ");
             this._cameraRef = ref;
             this._cameraHandle = findNodeHandle(ref);
         } else {
+            console.log(" NULL ");
             this._cameraRef = null;
             this._cameraHandle = null;
         }
     };
 
     constructor() {
+        console.log("constructor");
         super();
         this.state = {
             mounted: false
@@ -174,7 +182,7 @@ export default class WpcButtonClass extends Component {
     wpcBtnClick() {
         WpcButtonManager.wpcBtnClick(this._cameraHandle);
     }
-
+    
     async takePicture() {
         return await WpcButtonManager.detection(this._cameraHandle);
     }
@@ -193,7 +201,9 @@ export default class WpcButtonClass extends Component {
 
     render() {
         const nativeProps = convertNativeProps(this.props);
-
+        console.log(" index.js render() ");
+        // console.log(" nativeProps= ");
+        // console.log(nativeProps);
         return <WpcButton
             mounted={this.state.mounted}
             ref={this._setReference}
@@ -216,5 +226,6 @@ const WpcButton = requireNativeComponent(
         }
     }
 );
+console.log(" bottom line ");
 
 
