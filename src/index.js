@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {NativeModules, requireNativeComponent, View, findNodeHandle} from 'react-native';
 
-const WpcButtonManager = NativeModules.WpcPrinter;
+const WpcButtonManager = NativeModules.Printer;
 const CAMERA_REF = 'wpcBtn';
 
 type DetectOption = {
@@ -29,12 +29,14 @@ function convertNativeProps(props) {
     if (typeof props.rotateMode === 'string') {
         newProps.rotateMode = WpcButtonClass.constants.RotateMode[props.rotateMode];
     }
+    
     delete newProps.onTrained;
     delete newProps.onRecognized;
     delete newProps.onFaceCaptured;
     delete newProps.onWpcButtonClicked;
     delete newProps.onUntrained;
     delete newProps.onUnrecognized;
+    
     return newProps;
 }
 
@@ -168,6 +170,7 @@ export default class WpcButtonClass extends Component {
         })
     }
     
+    // customize
     wpcBtnClick() {
         WpcButtonManager.wpcBtnClick(this._cameraHandle);
     }

@@ -1,42 +1,11 @@
 {
-  "_from": "wpc_printer@^0.0.1",
-  "_id": "wpc_printer@0.0.1",
-  "_inBundle": false,
-  "_integrity": "sha512-SYQM3thaxPfKJOzpt207OSb9aQU3B+R5LuscqEy3eBhDrrwvey7IwJXao8f2US/B0Dz56w2nAZgZirMPJsUfyw==",
-  "_location": "/wpc_printer",
-  "_phantomChildren": {},
-//  "_requested": {
-//    "type": "range",
-//    "registry": true,
-//    "raw": "react-native-facerecognition@^2.0.0",
-//    "name": "react-native-facerecognition",
-//    "escapedName": "react-native-facerecognition",
-//    "rawSpec": "^2.0.0",
-//    "saveSpec": null,
-//    "fetchSpec": "^2.0.0"
-//  },
-  "_requiredBy": [
-    "/"
-  ],
-//  "_resolved": "https://registry.npmjs.org/react-native-facerecognition/-/react-native-facerecognition-2.0.0.tgz",
-//  "_shasum": "0ad147063940800868982ee5266d1da86e56970a",
-  "_spec": "wpc_printer@0.0.1",
-  "_where": "/Users/MAC/Desktop/RN_Printer",
-  "author": {
-    "name": "IChen.Chu",
-    "email": "r99521320@gmail.com"
-  },
-  "bundleDependencies": false,
-  "deprecated": false,
-  "description": "WPC Printer SDK dev by IChen",
-  "license": "MIT",
-  "main": "src/index.js",
   "name": "wpc_printer",
-  "peerDependencies": {
-    "react-native": "^0.59.9"
-  },
+  "version": "1.0.0",
+  "description": "WPC Printer SDK dev by IChen",
+  "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "version": "0.0.1"
+  "author": "IChen.Chu",
+  "license": "MIT"
 }

@@ -26,7 +26,7 @@ import java.util.Map;
 public class WpcButtonModule extends ReactContextBaseJavaModule implements LifecycleEventListener {
 
 
-    final static String Lib = "WpcPrinter";
+    final static String Lib = "Printer";
     final static String TAG = WpcButtonModule.class.getName();
 
 
