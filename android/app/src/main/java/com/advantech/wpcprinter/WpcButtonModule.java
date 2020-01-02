@@ -139,6 +139,20 @@ public class WpcButtonModule extends ReactContextBaseJavaModule implements Lifec
         });
     }
 
+    @ReactMethod
+    public void wpcConnectToPrinter(final int viewFlag) {
+        final ReactApplicationContext rctx = getReactApplicationContext();
+        UIManagerModule uiManager = rctx.getNativeModule(UIManagerModule.class);
+        uiManager.addUIBlock(new UIBlock() {
+            @Override
+            public void execute(NativeViewHierarchyManager nativeViewHierarchyManager) {
+                final FrameLayout view = (FrameLayout) nativeViewHierarchyManager.resolveView(viewFlag);
+                final Button wpc_connect_printer = (Button) view.findViewById(R.id.wpc_connect_printer);
+                wpc_connect_printer.callOnClick();
+            }
+        });
+    }
+
 
 //    @ReactMethod
 //    public void detection(final int viewFlag,final Promise errorCallback) {

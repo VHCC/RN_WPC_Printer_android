@@ -19,4 +19,11 @@
         android:layout_height="100dp"
         android:visibility="visible"/>
 
+    <Button
+        android:layout_gravity="center"
+        android:id="@+id/wpc_connect_printer"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:visibility="visible"/>
+
 </FrameLayout>

@@ -182,6 +182,10 @@ export default class WpcButtonClass extends Component {
     wpcBtnClick() {
         WpcButtonManager.wpcBtnClick(this._cameraHandle);
     }
+
+    wpcConnectToPrinter() {
+        WpcButtonManager.wpcConnectToPrinter(this._cameraHandle);
+    }
     
     async takePicture() {
         return await WpcButtonManager.detection(this._cameraHandle);
