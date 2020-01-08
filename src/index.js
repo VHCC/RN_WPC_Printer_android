@@ -10,6 +10,13 @@ type DetectOption = {
     fname?: string
 };
 
+type PrintInfo = {
+    orderNumber?: string,
+    userName?: string,
+    productName?: string,
+    isBonus?: boolean,
+};
+
 function convertNativeProps(props) {
     const newProps = {...props};
     if (typeof props.aspect === 'string') {
@@ -201,6 +208,11 @@ export default class WpcButtonClass extends Component {
 
     clear() {
         WpcButtonManager.clear(this._cameraHandle);
+    }
+
+
+    sendInfoToPrinter(info?: PrintInfo) {
+        WpcButtonManager.printWPCItem(info, this._cameraHandle);
     }
 
     render() {

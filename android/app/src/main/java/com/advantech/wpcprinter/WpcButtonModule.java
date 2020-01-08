@@ -3,6 +3,7 @@ package com.advantech.wpcprinter;
 import android.widget.Button;
 import android.widget.FrameLayout;
 
+import com.advantech.wpcprinter.util.MLog;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.Promise;
@@ -25,9 +26,10 @@ import java.util.Map;
 
 public class WpcButtonModule extends ReactContextBaseJavaModule implements LifecycleEventListener {
 
+    private static final MLog mLog = new MLog(true);
+    private final String TAG = getClass().getSimpleName() + "@" + Integer.toHexString(hashCode());
 
     final static String Lib = "Printer";
-    final static String TAG = WpcButtonModule.class.getName();
 
 
     public WpcButtonModule(ReactApplicationContext reactContext) {
@@ -153,6 +155,21 @@ public class WpcButtonModule extends ReactContextBaseJavaModule implements Lifec
         });
     }
 
+    @ReactMethod
+    public void printWPCItem(final ReadableMap printInfo,final int viewFlag) {
+        final ReactApplicationContext rctx = getReactApplicationContext();
+        UIManagerModule uiManager = rctx.getNativeModule(UIManagerModule.class);
+        uiManager.addUIBlock(new UIBlock() {
+            @Override
+            public void execute(NativeViewHierarchyManager nativeViewHierarchyManager) {
+                final FrameLayout view = (FrameLayout) nativeViewHierarchyManager.resolveView(viewFlag);
+                mLog.d(TAG, printInfo.getString("orderNumber"));
+                mLog.d(TAG, printInfo.getString("userName"));
+                mLog.d(TAG, printInfo.getString("productName"));
+                mLog.d(TAG, "" + printInfo.getBoolean("isBonus"));
+            }
+        });
+    }
 
 //    @ReactMethod
 //    public void detection(final int viewFlag,final Promise errorCallback) {
