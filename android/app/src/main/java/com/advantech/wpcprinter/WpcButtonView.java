@@ -3,8 +3,11 @@ package com.advantech.wpcprinter;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,24 +21,36 @@ import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
+import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.common.MapBuilder;
 import com.facebook.react.uimanager.SimpleViewManager;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.events.RCTEventEmitter;
+import com.rt.printerlibrary.bean.Position;
 import com.rt.printerlibrary.bean.UsbConfigBean;
 import com.rt.printerlibrary.cmd.Cmd;
 import com.rt.printerlibrary.cmd.EscFactory;
 import com.rt.printerlibrary.connect.PrinterInterface;
+import com.rt.printerlibrary.enumerate.BmpPrintMode;
+import com.rt.printerlibrary.enumerate.CommonEnum;
+import com.rt.printerlibrary.enumerate.ESCFontTypeEnum;
+import com.rt.printerlibrary.enumerate.SettingEnum;
+import com.rt.printerlibrary.exception.SdkException;
 import com.rt.printerlibrary.factory.cmd.CmdFactory;
 import com.rt.printerlibrary.factory.connect.PIFactory;
 import com.rt.printerlibrary.factory.connect.UsbFactory;
 import com.rt.printerlibrary.factory.printer.PrinterFactory;
 import com.rt.printerlibrary.factory.printer.UniversalPrinterFactory;
 import com.rt.printerlibrary.printer.RTPrinter;
+import com.rt.printerlibrary.setting.BitmapSetting;
+import com.rt.printerlibrary.setting.CommonSetting;
+import com.rt.printerlibrary.setting.TextSetting;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -56,8 +71,10 @@ public class WpcButtonView extends SimpleViewManager<FrameLayout> implements Lif
     // USB
     private UsbManager mUsbManager;
 
+    public static WpcButtonView mWpcButtonView;
+
     // Printer
-    private RTPrinter rtPrinter = null;
+    public static RTPrinter rtPrinter = null;
     private PrinterFactory printerFactory = new UniversalPrinterFactory();
 
 
@@ -70,6 +87,10 @@ public class WpcButtonView extends SimpleViewManager<FrameLayout> implements Lif
         super();
 //        receiver = createOrientationReceiver();
         reactContext.addLifecycleEventListener(this);
+    }
+
+    public static WpcButtonView getInstance() {
+        return mWpcButtonView;
     }
 
     // extends SimpleViewManager<FrameLayout>
@@ -96,12 +117,22 @@ public class WpcButtonView extends SimpleViewManager<FrameLayout> implements Lif
             public void onClick(View view) {
                 mLog.d(TAG, "WPC Button onClick");
 
-                if (rtPrinter != null) {
-                    CmdFactory cmdFactory = new EscFactory();
-                    Cmd cmd = cmdFactory.create();
-                    cmd.append(cmd.getBeepCmd());
-                    rtPrinter.writeMsgAsync(cmd.getAppendCmds());
-                }
+//                if (rtPrinter != null) {
+//                    CmdFactory cmdFactory = new EscFactory();
+//                    Cmd cmd = cmdFactory.create();
+//                    cmd.append(cmd.getBeepCmd());
+//                    rtPrinter.writeMsgAsync(cmd.getAppendCmds());
+//                }
+
+//                if (rtPrinter != null) {
+//                    try {
+//                        textPrint();
+//                    } catch (UnsupportedEncodingException e) {
+//                        e.printStackTrace();
+//                    } catch (SdkException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
 
                 // Native callBack to => RN
                 ReactContext context = reactContext;
@@ -159,6 +190,7 @@ public class WpcButtonView extends SimpleViewManager<FrameLayout> implements Lif
     @Override
     public void onHostResume() {
         mLog.d(TAG, " * onHostResume * ");
+        mWpcButtonView = this;
         if (RNLayoutRef == null) return;
         ViewGroup layout = RNLayoutRef.get();
         if (layout == null) return;
@@ -207,8 +239,6 @@ public class WpcButtonView extends SimpleViewManager<FrameLayout> implements Lif
     }
 
 
-
-
     private void connectUSB(UsbConfigBean usbConfigBean) {
 
         mLog.d(TAG, "connectUSB");
@@ -231,4 +261,154 @@ public class WpcButtonView extends SimpleViewManager<FrameLayout> implements Lif
         }
 
     }
+
+
+    private String mChartsetName = "UTF-8";
+    private TextSetting textSetting = new TextSetting();
+    private ESCFontTypeEnum curESCFontType = null;
+
+    private void escPrintBold(String textString) throws UnsupportedEncodingException {
+        mLog.d(TAG, "escPrintBold");
+        if (rtPrinter != null) {
+            CmdFactory escFac = new EscFactory();
+            Cmd escCmd = escFac.create();
+            escCmd.append(escCmd.getHeaderCmd());//初始化, Initial
+
+            escCmd.setChartsetName(mChartsetName);
+            textSetting.setEscFontType(curESCFontType);
+            textSetting.setBold(SettingEnum.Enable);
+            textSetting.setCpclFontSize(48);
+            textSetting.setAlign(CommonEnum.ALIGN_MIDDLE);
+
+            escCmd.append(escCmd.getTextCmd(textSetting, textString));
+
+            escCmd.append(escCmd.getLFCRCmd());
+//            escCmd.append(escCmd.getLFCRCmd());
+//            escCmd.append(escCmd.getLFCRCmd());
+//            escCmd.append(escCmd.getLFCRCmd());
+//            escCmd.append(escCmd.getLFCRCmd());
+//            escCmd.append(escCmd.getHeaderCmd());//初始化, Initial
+//            escCmd.append(escCmd.getLFCRCmd());
+
+            rtPrinter.writeMsgAsync(escCmd.getAppendCmds());
+        }
+    }
+
+    private void escPrint(String textString) throws UnsupportedEncodingException {
+        mLog.d(TAG, "escPrint");
+        if (rtPrinter != null) {
+            CmdFactory escFac = new EscFactory();
+            Cmd escCmd = escFac.create();
+            escCmd.append(escCmd.getHeaderCmd());//初始化, Initial
+
+            escCmd.setChartsetName(mChartsetName);
+            textSetting.setEscFontType(curESCFontType);
+            textSetting.setBold(SettingEnum.Disable);
+            textSetting.setCpclFontSize(14);
+            textSetting.setAlign(CommonEnum.ALIGN_LEFT);
+
+            escCmd.append(escCmd.getTextCmd(textSetting, textString));
+
+            escCmd.append(escCmd.getLFCRCmd());
+//            escCmd.append(escCmd.getLFCRCmd());
+//            escCmd.append(escCmd.getLFCRCmd());
+//            escCmd.append(escCmd.getLFCRCmd());
+//            escCmd.append(escCmd.getLFCRCmd());
+//            escCmd.append(escCmd.getHeaderCmd());//初始化, Initial
+//            escCmd.append(escCmd.getLFCRCmd());
+
+            rtPrinter.writeMsgAsync(escCmd.getAppendCmds());
+        }
+    }
+
+    private int bmpPrintWidth = 120;
+
+    private void escPrintImage(final boolean isBonus) throws SdkException {
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+//                showProgressDialog("Loading...");
+
+                CmdFactory cmdFactory = new EscFactory();
+                Cmd cmd = cmdFactory.create();
+                cmd.append(cmd.getHeaderCmd());
+
+                CommonSetting commonSetting = new CommonSetting();
+                commonSetting.setAlign(CommonEnum.ALIGN_MIDDLE);
+                cmd.append(cmd.getCommonSettingCmd(commonSetting));
+
+                BitmapSetting bitmapSetting = new BitmapSetting();
+
+                /**
+                 * MODE_MULTI_COLOR - 适合多阶灰度打印<br/> Suitable for multi-level grayscale printing<br/>
+                 * MODE_SINGLE_COLOR-适合白纸黑字打印<br/>Suitable for printing black and white paper
+                 */
+                bitmapSetting.setBmpPrintMode(BmpPrintMode.MODE_MULTI_COLOR);
+
+
+                bitmapSetting.setBimtapLimitWidth(bmpPrintWidth * 8);
+                Bitmap bm = BitmapFactory.decodeResource(
+                        ActivityUtils.getTopActivity().getResources(), isBonus ? R.mipmap.wpc_face_true : R.mipmap.wpc_face_false);
+
+                try {
+                    cmd.append(cmd.getBitmapCmd(bitmapSetting, bm));
+                } catch (SdkException e) {
+                    e.printStackTrace();
+                }
+                cmd.append(cmd.getLFCRCmd());
+                cmd.append(cmd.getLFCRCmd());
+                cmd.append(cmd.getLFCRCmd());
+                cmd.append(cmd.getLFCRCmd());
+                cmd.append(cmd.getLFCRCmd());
+                cmd.append(cmd.getLFCRCmd());
+                cmd.append(cmd.getHeaderCmd());//初始化, Initial
+                cmd.append(cmd.getLFCRCmd());
+                if (rtPrinter != null) {
+                    rtPrinter.writeMsg(cmd.getAppendCmds());//Sync Write
+                }
+            }
+        }).start();
+
+
+        //将指令保存到bin文件中，路径地址为sd卡根目录
+//        final byte[] btToFile = cmd.getAppendCmds();
+//        TonyUtils.createFileWithByte(btToFile, "Esc_imageCmd.bin");
+//        TonyUtils.saveFile(FuncUtils.ByteArrToHex(btToFile), "Esc_imageHex");
+
+    }
+
+    public void printItem(final ReadableMap printInfo) {
+        mLog.d(TAG, printInfo.getString("orderNumber"));
+        mLog.d(TAG, printInfo.getString("userName"));
+        mLog.d(TAG, printInfo.getString("productName"));
+        mLog.d(TAG, "" + printInfo.getBoolean("isBonus"));
+        if (rtPrinter != null) {
+
+            Date d = new Date();
+            CharSequence s = android.text.format.DateFormat.format("yyyy-MM-dd hh:mm:ss",d.getTime());
+
+            String line_1 = "Order <" + printInfo.getString("orderNumber") + ">";
+            String line_2 = "Guest Name: " + printInfo.getString("userName");
+            String line_2_1 = s.toString();
+            String line_3 = "-----------------------------------------------";
+            String line_4 = printInfo.getString("productName");
+            String line_5 = "-----------------------------------------------";
+            try {
+                escPrintBold(line_1);
+                escPrint(line_2);
+                escPrint(line_2_1);
+                escPrint(line_3);
+                escPrint(line_4);
+                escPrint(line_5);
+                escPrintImage(printInfo.getBoolean("isBonus"));
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            } catch (SdkException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }
+

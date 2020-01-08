@@ -163,10 +163,12 @@ public class WpcButtonModule extends ReactContextBaseJavaModule implements Lifec
             @Override
             public void execute(NativeViewHierarchyManager nativeViewHierarchyManager) {
                 final FrameLayout view = (FrameLayout) nativeViewHierarchyManager.resolveView(viewFlag);
-                mLog.d(TAG, printInfo.getString("orderNumber"));
-                mLog.d(TAG, printInfo.getString("userName"));
-                mLog.d(TAG, printInfo.getString("productName"));
-                mLog.d(TAG, "" + printInfo.getBoolean("isBonus"));
+//                mLog.d(TAG, printInfo.getString("orderNumber"));
+//                mLog.d(TAG, printInfo.getString("userName"));
+//                mLog.d(TAG, printInfo.getString("productName"));
+//                mLog.d(TAG, "" + printInfo.getBoolean("isBonus"));
+                WpcButtonView.getInstance().printItem(printInfo);
+
             }
         });
     }
