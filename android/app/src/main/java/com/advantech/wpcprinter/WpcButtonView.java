@@ -49,12 +49,15 @@ import com.rt.printerlibrary.setting.TextSetting;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -389,9 +392,13 @@ public class WpcButtonView extends SimpleViewManager<FrameLayout> implements Lif
             Date d = new Date();
             CharSequence s = android.text.format.DateFormat.format("yyyy-MM-dd hh:mm:ss",d.getTime());
 
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.getDefault());
+
+            String currentDateandTime = sdf.format(new Date());
+
             String line_1 = "Order <" + printInfo.getString("orderNumber") + ">";
             String line_2 = "Guest Name: " + printInfo.getString("userName");
-            String line_2_1 = s.toString();
+            String line_2_1 = currentDateandTime;
             String line_3 = "--------------------------------";
             String line_4 = printInfo.getString("productName");
             String line_5 = "--------------------------------";
