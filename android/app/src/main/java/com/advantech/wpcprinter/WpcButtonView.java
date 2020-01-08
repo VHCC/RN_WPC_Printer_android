@@ -392,7 +392,7 @@ public class WpcButtonView extends SimpleViewManager<FrameLayout> implements Lif
             Date d = new Date();
             CharSequence s = android.text.format.DateFormat.format("yyyy-MM-dd hh:mm:ss",d.getTime());
 
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.getDefault());
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.TAIWAN);
 
             String currentDateandTime = sdf.format(new Date());
 
