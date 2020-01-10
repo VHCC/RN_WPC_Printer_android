@@ -297,7 +297,7 @@ public class WpcButtonView extends SimpleViewManager<FrameLayout> implements Lif
         }
     }
 
-    private synchronized void escPrint(String textString) throws UnsupportedEncodingException {
+    private synchronized void escPrint(final ReadableMap printInfo) throws UnsupportedEncodingException {
         mLog.d(TAG, "escPrint");
         if (rtPrinter != null) {
             CmdFactory escFac = new EscFactory();
@@ -310,15 +310,29 @@ public class WpcButtonView extends SimpleViewManager<FrameLayout> implements Lif
             textSetting.setCpclFontSize(14);
             textSetting.setAlign(CommonEnum.ALIGN_LEFT);
 
-            escCmd.append(escCmd.getTextCmd(textSetting, textString));
+            String line_2 = "Guest Name: " + printInfo.getString("userName");
 
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.TAIWAN);
+            String currentDateandTime = sdf.format(new Date());
+            String line_2_1 = currentDateandTime;
+            String line_3 = "------------------------------------------------";
+            String line_4 = printInfo.getString("productName");
+            String line_5 = "------------------------------------------------";
+
+            escCmd.append(escCmd.getTextCmd(textSetting, line_2));
             escCmd.append(escCmd.getLFCRCmd());
-//            escCmd.append(escCmd.getLFCRCmd());
-//            escCmd.append(escCmd.getLFCRCmd());
-//            escCmd.append(escCmd.getLFCRCmd());
-//            escCmd.append(escCmd.getLFCRCmd());
-//            escCmd.append(escCmd.getHeaderCmd());//初始化, Initial
-//            escCmd.append(escCmd.getLFCRCmd());
+
+            escCmd.append(escCmd.getTextCmd(textSetting, line_2_1));
+            escCmd.append(escCmd.getLFCRCmd());
+
+            escCmd.append(escCmd.getTextCmd(textSetting, line_3));
+            escCmd.append(escCmd.getLFCRCmd());
+
+            escCmd.append(escCmd.getTextCmd(textSetting, line_4));
+            escCmd.append(escCmd.getLFCRCmd());
+
+            escCmd.append(escCmd.getTextCmd(textSetting, line_5));
+            escCmd.append(escCmd.getLFCRCmd());
 
             rtPrinter.writeMsgAsync(escCmd.getAppendCmds());
         }
@@ -390,23 +404,20 @@ public class WpcButtonView extends SimpleViewManager<FrameLayout> implements Lif
         mLog.d(TAG, "" + printInfo.getBoolean("isBonus"));
         if (rtPrinter != null) {
 
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.TAIWAN);
-
-            String currentDateandTime = sdf.format(new Date());
-
             String line_1 = "Order <" + printInfo.getString("orderNumber") + ">";
-            String line_2 = "Guest Name: " + printInfo.getString("userName");
-            String line_2_1 = currentDateandTime;
-            String line_3 = "------------------------------------------------";
-            String line_4 = printInfo.getString("productName");
-            String line_5 = "------------------------------------------------";
+//            String line_2 = "Guest Name: " + printInfo.getString("userName");
+//            String line_2_1 = currentDateandTime;
+//            String line_3 = "------------------------------------------------";
+//            String line_4 = printInfo.getString("productName");
+//            String line_5 = "------------------------------------------------";
             try {
                 escPrintBold(line_1);
-                escPrint(line_2);
-                escPrint(line_2_1);
-                escPrint(line_3);
-                escPrint(line_4);
-                escPrint(line_5);
+//                escPrint(line_2);
+//                escPrint(line_2_1);
+//                escPrint(line_3);
+//                escPrint(line_4);
+//                escPrint(line_5);
+                escPrint(printInfo);
                 escPrintImage(printInfo.getBoolean("isBonus"));
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
