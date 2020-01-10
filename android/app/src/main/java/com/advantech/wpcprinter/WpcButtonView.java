@@ -297,7 +297,7 @@ public class WpcButtonView extends SimpleViewManager<FrameLayout> implements Lif
         }
     }
 
-    private void escPrint(String textString) throws UnsupportedEncodingException {
+    private synchronized void escPrint(String textString) throws UnsupportedEncodingException {
         mLog.d(TAG, "escPrint");
         if (rtPrinter != null) {
             CmdFactory escFac = new EscFactory();
@@ -397,9 +397,9 @@ public class WpcButtonView extends SimpleViewManager<FrameLayout> implements Lif
             String line_1 = "Order <" + printInfo.getString("orderNumber") + ">";
             String line_2 = "Guest Name: " + printInfo.getString("userName");
             String line_2_1 = currentDateandTime;
-            String line_3 = "-------------------------------------------------";
+            String line_3 = "------------------------------------------------";
             String line_4 = printInfo.getString("productName");
-            String line_5 = "-------------------------------------------------";
+            String line_5 = "------------------------------------------------";
             try {
                 escPrintBold(line_1);
                 escPrint(line_2);
