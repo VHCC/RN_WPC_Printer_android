@@ -371,6 +371,7 @@ public class WpcButtonView extends SimpleViewManager<FrameLayout> implements Lif
                 if (rtPrinter != null) {
                     rtPrinter.writeMsg(cmd.getAppendCmds());//Sync Write
                 }
+                allCutTest();
             }
         }).start();
 
@@ -396,9 +397,9 @@ public class WpcButtonView extends SimpleViewManager<FrameLayout> implements Lif
             String line_1 = "Order <" + printInfo.getString("orderNumber") + ">";
             String line_2 = "Guest Name: " + printInfo.getString("userName");
             String line_2_1 = currentDateandTime;
-            String line_3 = "--------------------------------";
+            String line_3 = "-------------------------------------------------";
             String line_4 = printInfo.getString("productName");
-            String line_5 = "--------------------------------";
+            String line_5 = "-------------------------------------------------";
             try {
                 escPrintBold(line_1);
                 escPrint(line_2);
@@ -407,7 +408,6 @@ public class WpcButtonView extends SimpleViewManager<FrameLayout> implements Lif
                 escPrint(line_4);
                 escPrint(line_5);
                 escPrintImage(printInfo.getBoolean("isBonus"));
-                allCutTest();
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             } catch (SdkException e) {
