@@ -389,9 +389,6 @@ public class WpcButtonView extends SimpleViewManager<FrameLayout> implements Lif
         mLog.d(TAG, "" + printInfo.getBoolean("isBonus"));
         if (rtPrinter != null) {
 
-            Date d = new Date();
-            CharSequence s = android.text.format.DateFormat.format("yyyy-MM-dd hh:mm:ss",d.getTime());
-
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.TAIWAN);
 
             String currentDateandTime = sdf.format(new Date());
@@ -410,6 +407,7 @@ public class WpcButtonView extends SimpleViewManager<FrameLayout> implements Lif
                 escPrint(line_4);
                 escPrint(line_5);
                 escPrintImage(printInfo.getBoolean("isBonus"));
+                allCutTest();
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             } catch (SdkException e) {
@@ -417,5 +415,18 @@ public class WpcButtonView extends SimpleViewManager<FrameLayout> implements Lif
             }
         }
     }
+
+    /**
+     * 全切测试
+     */
+    private void allCutTest() {
+        if (rtPrinter != null) {
+            CmdFactory cmdFactory = new EscFactory();
+            Cmd cmd = cmdFactory.create();
+            cmd.append(cmd.getAllCutCmd());
+            rtPrinter.writeMsgAsync(cmd.getAppendCmds());
+        }
+    }
+
 }
 
