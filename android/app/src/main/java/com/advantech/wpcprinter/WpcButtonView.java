@@ -293,7 +293,7 @@ public class WpcButtonView extends SimpleViewManager<FrameLayout> implements Lif
 //            escCmd.append(escCmd.getHeaderCmd());//初始化, Initial
 //            escCmd.append(escCmd.getLFCRCmd());
 
-            rtPrinter.writeMsgAsync(escCmd.getAppendCmds());
+            rtPrinter.writeMsg(escCmd.getAppendCmds());
         }
     }
 
