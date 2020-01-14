@@ -371,7 +371,7 @@ public class WpcButtonView extends SimpleViewManager<FrameLayout> implements Lif
                 if (rtPrinter != null) {
                     rtPrinter.writeMsg(cmd.getAppendCmds());//Sync Write
                 }
-                allCutTest();
+//                allCutTest();
             }
         }).start();
 
